@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes march-x {
+  to {
+    background-position-x: -16px;
+  }
+}
+
+@keyframes march-y {
+  to {
+    background-position-y: -16px;
+  }
+}
