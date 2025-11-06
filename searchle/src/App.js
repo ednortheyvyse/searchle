@@ -369,7 +369,7 @@ export default function App() {
     const gridHeightInTiles = Math.max(...initialCells.map((c) => c.y)) - minY + 1;
 
     const availableWidth = window.innerWidth - 20; // 10px padding on each side
-    const availableHeight = window.innerHeight - 350; // Approx height for header/footer
+    const availableHeight = window.innerHeight - 250; // Approx height for header/footer
 
     const tileWidth = Math.floor(availableWidth / gridWidthInTiles);
     const tileHeight = Math.floor(availableHeight / gridHeightInTiles);
@@ -679,11 +679,13 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 relative" style={{ touchAction: 'manipulation' }}>
+    <div
+      className="flex flex-col bg-gray-100 relative"
+      style={{ height: '100dvh', touchAction: 'manipulation' }}
+    >
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
 
-      <div className="flex-grow flex flex-col items-center">
-        <div className="flex justify-between items-center mt-4 w-full max-w-2xl px-4">
+        <div className="flex justify-between items-center mt-8 w-full max-w-2xl px-4 pt-2">
           <h1 className="text-4xl md:text-5xl font-bold" style={{ fontFamily: 'Aoboshi One', cursive: true }}>Searchle</h1>
           <button
             onClick={() => setShowHelp(true)}
@@ -703,7 +705,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="relative mt-2 w-full" style={{ width, height, maxWidth: width }}>
+        <div className="flex-grow flex items-center justify-center w-full"><div className="relative mt-2" style={{ width, height, maxWidth: width }}>
           {initialCells.map((cell, i) => {
             const key = `${cell.x},${cell.y}`;
             const isActive = activeCell === key;
@@ -729,8 +731,7 @@ export default function App() {
               />
             );
           })}
-        </div>
-      </div>
+        </div></div>
 
       {/* Fixed footer for buttons and keyboard */}
       <div className="flex flex-col items-center px-2 pb-2 md:pb-4"> {/* Added px-2 for horizontal padding */}
