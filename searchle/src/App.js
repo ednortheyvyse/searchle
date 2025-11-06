@@ -359,11 +359,21 @@ export default function App() {
   const initialCells = useMemo(() => puzzle ? getLetterPositions(puzzle) : [], [puzzle]);
   
   const TILE = useMemo(() => {
-    if (typeof window === 'undefined' || !initialCells.length) return GAME_CONFIG.TILE;
+    if (typeof window === 'undefined' || !initialCells.length) {
+      return GAME_CONFIG.TILE;
+    }
+
     const minX = Math.min(...initialCells.map((c) => c.x));
+    const minY = Math.min(...initialCells.map((c) => c.y));
     const gridWidthInTiles = Math.max(...initialCells.map((c) => c.x)) - minX + 1;
+    const gridHeightInTiles = Math.max(...initialCells.map((c) => c.y)) - minY + 1;
+
     const availableWidth = window.innerWidth - 20; // 10px padding on each side
-    return Math.min(GAME_CONFIG.TILE, Math.floor(availableWidth / gridWidthInTiles));
+    const availableHeight = window.innerHeight - 350; // Approx height for header/footer
+
+    const tileWidth = Math.floor(availableWidth / gridWidthInTiles);
+    const tileHeight = Math.floor(availableHeight / gridHeightInTiles);
+    return Math.min(GAME_CONFIG.TILE, tileWidth, tileHeight);
   }, [initialCells]);
 
   const MAX_ATTEMPTS = GAME_CONFIG.MAX_ATTEMPTS;
@@ -651,7 +661,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 relative">
+    <div className="min-h-screen flex flex-col bg-gray-100 relative" style={{ touchAction: 'manipulation' }}>
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
       <button
         onClick={() => setShowHelp(true)}
@@ -673,7 +683,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="relative my-auto" style={{ width, height }}>
+        <div className="relative my-auto w-full" style={{ width, height, maxWidth: width }}>
           {initialCells.map((cell, i) => {
             const key = `${cell.x},${cell.y}`;
             const isActive = activeCell === key;
