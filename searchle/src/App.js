@@ -663,19 +663,21 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 relative" style={{ touchAction: 'manipulation' }}>
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
-      <button
-        onClick={() => setShowHelp(true)}
-        className="absolute top-4 right-4 w-8 h-8 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center font-bold text-xl hover:bg-gray-300 z-10"
-        aria-label="How to play"
-      >
-        i
-      </button>
 
       <div className="flex-grow overflow-y-auto flex flex-col items-center">
-        <div className="text-center mb-4 mt-8">
-          <h1 className="text-4xl md:text-5xl font-bold" style={{ fontFamily: 'Aoboshi One', cursive: true }}>🔍 Searchle</h1>
+        <div className="flex justify-between items-center mt-4 w-full max-w-2xl px-4">
+          <h1 className="text-4xl md:text-5xl font-bold" style={{ fontFamily: 'Aoboshi One', cursive: true }}>Searchle</h1>
+          <button
+            onClick={() => setShowHelp(true)}
+            className="w-8 h-8 bg-gray-200 text-gray-700 rounded flex items-center justify-center font-bold text-xl hover:bg-gray-300"
+            aria-label="How to play"
+          >
+            i
+          </button>
+        </div>
+        <div className="text-left mb-4 w-full max-w-2xl px-4"> {/* This div now contains only attempts and messages */}
           <p className="text-gray-600">Attempts: {attempts}/{MAX_ATTEMPTS}</p>
-          <div className="h-8 mt-2"> {/* Reserve space for the message */}
+          <div className="h-8 mt-2 text-center"> {/* Reserve space for the message */}
             {gameWon && <p className="text-2xl font-bold text-green-600">You won!</p>}
             {gameOver && !gameWon && (
               <p className="text-2xl font-bold text-red-600">Game Over!</p>
