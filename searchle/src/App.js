@@ -180,14 +180,14 @@ const Keyboard = React.memo(function Keyboard({ onKeyPress, keyStates }) {
   }, [keyStates]);
 
   return (
-    <div className="flex flex-col items-center w-full max-w-2xl">
+    <div className="flex flex-col items-center w-full max-w-2xl px-1">
       {keyboardLayout.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex justify-center my-0.5">
+        <div key={rowIndex} className="flex justify-center my-0.5 w-full">
           {row.map((key) => (
             <button
               key={key}
               className={`relative flex items-center justify-center h-10 mx-px text-sm font-bold uppercase rounded border border-gray-400 ${getKeyColor(key)}`}
-              style={{ width: key.length > 1 ? '55px' : '40px' }} // Adjust width for special keys
+              style={{ flex: key.length > 1 ? '1.5' : '1' }}
               onClick={() => onKeyPress({ key: key, preventDefault: () => {} })} // Pass mock event with preventDefault
             >
               {key === "Backspace" ? "⌫" :
@@ -357,7 +357,15 @@ export default function App() {
   }, []);
 
   const initialCells = useMemo(() => puzzle ? getLetterPositions(puzzle) : [], [puzzle]);
-  const TILE = GAME_CONFIG.TILE;
+  
+  const TILE = useMemo(() => {
+    if (typeof window === 'undefined' || !initialCells.length) return GAME_CONFIG.TILE;
+    const minX = Math.min(...initialCells.map((c) => c.x));
+    const gridWidthInTiles = Math.max(...initialCells.map((c) => c.x)) - minX + 1;
+    const availableWidth = window.innerWidth - 20; // 10px padding on each side
+    return Math.min(GAME_CONFIG.TILE, Math.floor(availableWidth / gridWidthInTiles));
+  }, [initialCells]);
+
   const MAX_ATTEMPTS = GAME_CONFIG.MAX_ATTEMPTS;
 
   const offsetX = useMemo(() => Math.min(...initialCells.map((c) => c.x)), [initialCells]);
@@ -655,7 +663,7 @@ export default function App() {
 
       <div className="flex-grow overflow-y-auto flex flex-col items-center">
         <div className="text-center mb-4 mt-8">
-          <h1 className="text-5xl font-bold" style={{ fontFamily: 'Aoboshi One', cursive: true }}>🔍 Searchle</h1>
+          <h1 className="text-4xl md:text-5xl font-bold" style={{ fontFamily: 'Aoboshi One', cursive: true }}>🔍 Searchle</h1>
           <p className="text-gray-600">Attempts: {attempts}/{MAX_ATTEMPTS}</p>
           <div className="h-8 mt-2"> {/* Reserve space for the message */}
             {gameWon && <p className="text-2xl font-bold text-green-600">You won!</p>}
@@ -695,7 +703,7 @@ export default function App() {
       </div>
 
       {/* Fixed footer for buttons and keyboard */}
-      <div className="flex flex-col items-center pb-4"> {/* Added pb-4 for some padding at the very bottom */}
+      <div className="flex flex-col items-center px-2 pb-2 md:pb-4"> {/* Added px-2 for horizontal padding */}
         <div className="mt-2 mb-4 flex justify-center space-x-2">
           <button
             onClick={handleNewGame}
