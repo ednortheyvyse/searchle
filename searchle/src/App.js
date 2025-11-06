@@ -404,6 +404,24 @@ export default function App() {
   const [gameWon, setGameWon] = useState(false);
   const [revealTick, setRevealTick] = useState(0); // bump to retrigger reveal anim
 
+  // Effect to disable scrolling and zooming on the page
+  useEffect(() => {
+    const metaViewport = document.querySelector('meta[name="viewport"]');
+    const originalContent = metaViewport ? metaViewport.getAttribute('content') : null;
+
+    if (metaViewport) {
+      metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    }
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      if (metaViewport && originalContent) {
+        metaViewport.setAttribute('content', originalContent);
+      }
+      document.body.style.overflow = 'visible';
+    };
+  }, []);
+
   // Load game state from localStorage when puzzle is available
   useEffect(() => {
     if (puzzle) {
@@ -664,7 +682,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-gray-100 relative" style={{ touchAction: 'manipulation' }}>
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
 
-      <div className="flex-grow overflow-y-auto flex flex-col items-center">
+      <div className="flex-grow flex flex-col items-center">
         <div className="flex justify-between items-center mt-4 w-full max-w-2xl px-4">
           <h1 className="text-4xl md:text-5xl font-bold" style={{ fontFamily: 'Aoboshi One', cursive: true }}>Searchle</h1>
           <button
@@ -675,9 +693,9 @@ export default function App() {
             i
           </button>
         </div>
-        <div className="text-left mb-4 w-full max-w-2xl px-4"> {/* This div now contains only attempts and messages */}
+        <div className="text-left w-full max-w-2xl px-4"> {/* This div now contains only attempts and messages */}
           <p className="text-gray-600">Attempts: {attempts}/{MAX_ATTEMPTS}</p>
-          <div className="h-8 mt-2 text-center"> {/* Reserve space for the message */}
+          <div className="h-8 text-center"> {/* Reserve space for the message */}
             {gameWon && <p className="text-2xl font-bold text-green-600">You won!</p>}
             {gameOver && !gameWon && (
               <p className="text-2xl font-bold text-red-600">Game Over!</p>
@@ -685,7 +703,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="relative my-auto w-full" style={{ width, height, maxWidth: width }}>
+        <div className="relative mt-2 w-full" style={{ width, height, maxWidth: width }}>
           {initialCells.map((cell, i) => {
             const key = `${cell.x},${cell.y}`;
             const isActive = activeCell === key;
